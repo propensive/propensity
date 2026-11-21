@@ -1,0 +1,25 @@
+FONTLOG for Propensity
+
+Propensity is based on Marcellus by Brian J. Bonislawsky DBA Astigmatic (AOETI), and is a
+modified version of it, released under the SIL Open Font License 1.1. "Marcellus" is a
+Reserved Font Name, so this modified version carries a different name.
+
+ChangeLog
+
+1.100
+- Based on Marcellus-Regular.ttf version 1.000 as distributed by Google Fonts. Every
+  original glyph, its metrics and its Latin kerning are unchanged.
+- Added Cyrillic for Russian, Ukrainian and Belarusian (U+0401, U+0404, U+0406, U+0407,
+  U+040E, U+0410-U+044F, U+0451, U+0454, U+0456, U+0457, U+045E, U+0490, U+0491), the
+  numero sign (U+2116), the hryvnia sign (U+20B4) and the ruble sign (U+20BD).
+- The Cyrillic outlines are adapted from Marcellus's Latin glyphs; lowercase letters with
+  small-capital shapes are adapted from Marcellus SC by the same designer.
+- U+041B, U+0414, U+043B and U+0434 are flat-topped, with a curved left stroke adapted
+  from J. Stylistic set ss01 replaces them with pointed forms.
+- Added Cyrillic kerning derived from the Latin kerning of similarly shaped letters, and
+  registered the layout features for the Cyrillic and default scripts.
+
+Acknowledgements
+
+Cyrillic additions: Propensive OÜ
+Marcellus and Marcellus SC: Brian J. Bonislawsky DBA Astigmatic (AOETI), astigma@astigmatic.com
