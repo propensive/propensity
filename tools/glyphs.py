@@ -65,10 +65,12 @@ def build_specs(font, sc_font, with_greek=False):
     shape("ф", r.ef_lower(lat("o"), lat("l")))
 
     # Л Д: flat-topped with a curved left stroke by default; the pointed forms are in ss01
-    J = lat("J")
+    # the left stroke is J for the capitals and, for the lowercase, Marcellus SC's small
+    # capital J, which has the same tail at the lowercase stem weight; neither is rescaled
+    J, small_j = lat("J"), Shape.glyph(sc_font.getGlyphSet(), "j")
     for ch, flat, pointed in (("Л", r.el_flat, r.el), ("Д", r.de_flat, r.de)):
         shape(ch, flat(cap, J))
-        shape(ch.lower(), flat(small, J))
+        shape(ch.lower(), flat(small, small_j))
         shape(ch, pointed(cap), name=uni(ch) + ".ss01", code=False)
         shape(ch.lower(), pointed(small), name=uni(ch.lower()) + ".ss01", code=False)
 

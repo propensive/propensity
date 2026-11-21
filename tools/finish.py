@@ -296,8 +296,8 @@ ChangeLog
   numero sign (U+2116), the hryvnia sign (U+20B4) and the ruble sign (U+20BD).
 - The Cyrillic outlines are adapted from Marcellus's Latin glyphs; lowercase letters with
   small-capital shapes are adapted from Marcellus SC by the same designer.
-- U+041B, U+0414, U+043B and U+0434 are flat-topped, with a curved left stroke adapted
-  from J. Stylistic set ss01 replaces them with pointed forms.
+- U+041B, U+0414, U+043B and U+0434 are flat-topped; their left stroke is J at its own
+  weight and proportions, cropped at the top. Stylistic set ss01 replaces them with pointed forms.
 - Added Cyrillic kerning derived from the Latin kerning of similarly shaped letters, and
   registered the layout features for the Cyrillic and default scripts.
 

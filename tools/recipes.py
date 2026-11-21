@@ -10,8 +10,6 @@ from geom import Shape
 X_HEIGHT = 1024
 CAP_HEIGHT = 1434
 SC_HEIGHT = 1075
-# Weight of the curved left stroke of Л and Д, as a fraction of the stem weight.
-LEG_WEIGHT = 0.85
 
 
 class Master:
@@ -467,34 +465,37 @@ def ze(m, three, weight=0.0):
 
 # ---- Л Д (flat-topped, the default forms) -------------------------------------------------
 
-def _curved_leg(m, J, lean, into_bar, weight):
-    """The left stroke of Л and Д: J narrowed to `weight` of the stem weight, so its tail
-    gives a gentle curve out to the left ending in the font's own tapered terminal.
+def _curved_leg(m, J, into_bar):
+    """The left stroke of Л and Д: J itself, at its own weight and proportions, neither
+    narrowed nor slanted. Its tail gives a gentle curve out to the left, ending in the
+    font's own tapered terminal. J is taller than the letter needs, so it is raised until
+    its tail sits where it should and the surplus is cropped from the top.
 
-    For Л the tapered tip rests on the baseline. For Д the tail runs into the baseline bar
-    while it still has some weight, and is cut there. Returned with the top outer corner
-    at x=0, together with the stroke's width at the top."""
-    k = m.h / CAP_HEIGHT
-    jl, jr = J.xs(0.6 * CAP_HEIGHT)[:2]
-    leg = J.scale(weight * m.sw / (jr - jl), k, ox=jl, oy=0)
+    For Л the tapered tip rests on the baseline. For Д the whole tail is kept as well: its
+    tip comes down to the underside of the baseline bar and is taken up into the bar.
+    Returned with the top outer corner at x=0, together with the stroke's width at the top."""
     if into_bar:
-        dy = m.bottom_arm + 200 * k
+        dy = -J.bounds[1]
     else:
-        dy = -leg.bounds[1] - 0.008 * m.h
-    leg = leg.shift(0, dy).skew(lean, oy=0)
+        dy = -J.bounds[1] - 0.008 * m.h
+    leg = J.shift(0, dy)
     leg = leg.keep(y0=0, y1=m.h) if into_bar else leg.keep(y1=m.h)
     top = leg.xs(m.h - 1)
     return leg.shift(-top[0], 0), top[1] - top[0]
 
 
-def _flat(m, J, lean, counter, footed, weight):
+def _flat(m, J, counter, footed):
     a, b, c, d = m.stems
-    leg, leg_w = _curved_leg(m, J, lean, into_bar=footed, weight=weight)
+    leg, leg_w = _curved_leg(m, J, into_bar=footed)
     stem0, bl = _corner_stem(m, top=True)
     c2 = leg_w + counter * (c - b)
     right = stem0.flip_h((c2 + bl) / 2)
     bar = Shape.rect(leg_w * 0.5, m.top_arm, c2 + 20, m.h)
-    shape = leg | bar | right
+    # the right stem flares outward at its top corner; give the left stroke the same flare
+    F = m("F")
+    fa = F.xs(0.35 * m.h)[0]
+    flare = F.keep(x1=fa + 1, y0=0.72 * m.h, y1=m.h).shift(-fa, 0)
+    shape = leg | flare | bar | right
     if footed:
         t = m.bottom_arm
         out = 0.5 * m.sw
@@ -513,12 +514,12 @@ def _flat(m, J, lean, counter, footed, weight):
     return shape, shape.bounds[2] + m.rsb("H")
 
 
-def el_flat(m, J, weight=LEG_WEIGHT):
-    return _flat(m, J, lean=0.12, counter=0.72, footed=False, weight=weight)
+def el_flat(m, J):
+    return _flat(m, J, counter=0.72, footed=False)
 
 
-def de_flat(m, J, weight=LEG_WEIGHT):
-    return _flat(m, J, lean=0.07, counter=0.66, footed=True, weight=weight)
+def de_flat(m, J):
+    return _flat(m, J, counter=0.66, footed=True)
 
 
 # ---- lowercase б ф ----------------------------------------------------------------------
