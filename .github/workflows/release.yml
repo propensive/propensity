@@ -1,0 +1,73 @@
+# Publishes a release when a version tag such as 1.100 is pushed.
+#
+# The font is built from source on a clean machine, the checks are run, and the release is
+# made only if they pass and the tag is the version the font itself reports.
+name: Release
+
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install the build tools
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Build the font, render the proofs, run the checks
+        run: ./make.sh
+
+      - name: Confirm the tag is the font's own version
+        run: |
+          .venv/bin/python -I - <<'PY'
+          import os, sys
+          from fontTools.ttLib import TTFont
+          tag = os.environ["GITHUB_REF_NAME"]
+          font = TTFont("build/Propensity-Regular.ttf")
+          version = font["name"].getDebugName(5).removeprefix("Version ")
+          family = font["name"].getDebugName(1)
+          print(f"tag {tag}; font is {family} {version}")
+          sys.exit(0 if (version, family) == (tag, "Propensity") else f"the tag {tag} does not match the font ({family} {version})")
+          PY
+
+      - name: Write the release notes
+        run: |
+          .venv/bin/python -I - <<'PY'
+          import os, re
+          tag = os.environ["GITHUB_REF_NAME"]
+          log = open("build/FONTLOG.txt", encoding="utf-8").read()
+          section = re.search(rf"^{re.escape(tag)}\n(.*?)(?=\n\n\S|\Z)", log, re.M | re.S)
+          changes = section.group(1).strip() if section else ""
+          notes = f"""Propensity is the typeface of Propensive. It is based on Marcellus by Brian J. Bonislawsky (Astigmatic) and adds Cyrillic for Russian, Ukrainian and Belarusian. It is released under the SIL Open Font License 1.1, the same licence as Marcellus.
+
+          - `Propensity-Regular.ttf` installs on a computer.
+          - `Propensity-Regular.woff2` is the same font for the web.
+
+          ## Changes in {tag}
+
+          {changes}
+          """
+          open("release-notes.md", "w", encoding="utf-8").write("\n".join(line.removeprefix("          ") for line in notes.split("\n")))
+          PY
+          cat release-notes.md
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            build/Propensity-Regular.ttf build/Propensity-Regular.woff2 license.md \
+            --title "Propensity $GITHUB_REF_NAME" --notes-file release-notes.md --verify-tag

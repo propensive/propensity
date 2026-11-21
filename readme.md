@@ -31,3 +31,15 @@ The font is generated from the Marcellus files in `vendor/` by the scripts in `t
     .venv/bin/pip install -r requirements.txt
     ./make.sh          # builds the font, renders the proofs, runs the checks
     ./make.sh greek    # builds the Greek work in progress into wip/
+
+## Releasing
+
+A release is published by pushing a tag that is the font's version number, the one set as
+`VERSION` in `tools/finish.py`:
+
+    git tag 1.100
+    git push origin 1.100
+
+GitHub then builds the font from source, runs the checks, and publishes the `.ttf`, the
+`.woff2` and the licence as a release. It refuses if a check fails or if the tag is not the
+version the font reports.
