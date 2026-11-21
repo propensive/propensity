@@ -19,7 +19,7 @@ Greek letters are in progress and are not part of the font yet; see `wip/GREEK.m
 
 ## Licence
 
-Propensity is released under the [SIL Open Font License 1.1](build/OFL.txt), the same licence
+Propensity is released under the [SIL Open Font License 1.1](OFL.txt), the same licence
 as Marcellus. Marcellus is copyright Brian J. Bonislawsky DBA Astigmatic (AOETI); the Cyrillic
 additions are copyright Propensive OÜ.
 

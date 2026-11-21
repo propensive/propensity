@@ -17,6 +17,7 @@ if [ "$1" = "greek" ]; then
 else
   OUT=build/Propensity-Regular.ttf
   $PY tools/build.py "$SRC" "$SC" "$OUT"
+  cp build/OFL.txt OFL.txt    # the licence also sits at the top of the repository
   $PY tools/proof.py "$OUT" proofs
   $PY tools/check.py "$SRC" "$OUT" build/Propensity-Regular.woff2
 fi
